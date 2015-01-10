@@ -122,24 +122,27 @@ namespace MS.Web
 
 				#region Default Handling
 
-				switch (view)
+				if (!ProcessRequest(context, now, view, propertySet, action, eTag, out timeStamp))
 				{
-					case "date":
-						{
-							var sb = new StringBuilder();
-
-							ReturnValue(context, new
+					switch (view)
+					{
+						case "date":
 							{
-								now = now
+								var sb = new StringBuilder();
 
-							}, timeStamp);
-						}
-				
-						break;
-				
-					default:
+								ReturnValue(context, new
+								{
+									now = now
 
-						throw new NotImplementedException("The view '" + view + "' is not implemented.");
+								}, timeStamp);
+							}
+
+							break;
+
+						default:
+
+							throw new NotImplementedException("The view '" + view + "' is not implemented.");
+					}
 				}
 
 				#endregion
@@ -183,6 +186,12 @@ namespace MS.Web
 			}
 
 			context.Response.End();
+		}
+
+		protected virtual bool ProcessRequest(HttpContext context, DateTime now, string view, string propertySet, string action, string eTag, out string timeStamp)
+		{
+			timeStamp = null;
+			return false;
 		}
 
 		#region Common return data handling
